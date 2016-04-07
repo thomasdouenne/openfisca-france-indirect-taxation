@@ -3,7 +3,6 @@
 from __future__ import division
 
 import pandas as pd
-from pandas import concat
 import datetime as dt
 
 import os
@@ -35,90 +34,67 @@ indice_prix_mensuel_98_2015 = pd.read_csv(
         ), sep =';', decimal = ','
     )
 
+correspondance = pd.read_csv(
+    os.path.join(
+        default_config_files_directory,
+        'openfisca_france_indirect_taxation',
+        'assets',
+        'correspondance_noms_coicop.csv'
+        ), sep =';', header = -1
+    )
 
+correspondance.rename(columns = {0: 'nouveau_code', 1: 'ancien_code'}, inplace = True)
+correspondance['ancien_code'] = correspondance['ancien_code'].astype(int)
+correspondance['ancien_code'] = correspondance['ancien_code'].astype(str)
 
-indice_prix_mensuel_98_2015 = indice_prix_mensuel_98_2015.astype(str)
+correspondance_dict = dict()
+for instance in correspondance.iterrows():
+    correspondance_dict[instance[1]['nouveau_code']] = instance[1]['ancien_code']
 
-# On veut que les biens prennent les mêmes noms que ceux du modèle, i.e. poste_coicop_xyz
-# On doit donc changer le nom de tous les biens renseignés dans cette base de donnée
-# On sépare les biens des coicop 1 à 9 des autres de manière à enlever les 0 à la fin des noms sans faire d'erreurs
+for key, value in correspondance_dict.iteritems():
+    try:
+        indice_prix_mensuel_98_2015[key] = indice_prix_mensuel_98_2015['_' + value]
+    except:
+        indice_prix_mensuel_98_2015[key] = 0
 
-coicop_one_nine = indice_prix_mensuel_98_2015.ix[:,:'_9600']
+# Now we want to fill the empty columns with a given price index.
+indice_prix_mensuel_98_2015['poste_02_2_1'] = indice_prix_mensuel_98_2015['_2200']
+indice_prix_mensuel_98_2015['poste_02_2_2'] = indice_prix_mensuel_98_2015['_2200']
+indice_prix_mensuel_98_2015['poste_02_2_3'] = indice_prix_mensuel_98_2015['_2200']
+indice_prix_mensuel_98_2015['poste_02_3'] = indice_prix_mensuel_98_2015['_2000']
+indice_prix_mensuel_98_2015['poste_02_4'] = indice_prix_mensuel_98_2015['_2000']
+indice_prix_mensuel_98_2015['poste_04_2_1'] = indice_prix_mensuel_98_2015['poste_04_1_1_1_1']
+indice_prix_mensuel_98_2015['poste_04_5_5_2'] = indice_prix_mensuel_98_2015['poste_04_5_5_1_1']
+indice_prix_mensuel_98_2015['poste_05_2_1_1_3'] = indice_prix_mensuel_98_2015['poste_05_1_2_1_1']
+indice_prix_mensuel_98_2015['poste_05_2_1_2_1'] = indice_prix_mensuel_98_2015['poste_05_1_2_1_1']
+indice_prix_mensuel_98_2015['poste_05_5_2_3'] = indice_prix_mensuel_98_2015['poste_05_5_1_3']
+indice_prix_mensuel_98_2015['poste_05_7_1'] = indice_prix_mensuel_98_2015['_5000']
+indice_prix_mensuel_98_2015['poste_05_7_2'] = indice_prix_mensuel_98_2015['_5000']
+indice_prix_mensuel_98_2015['poste_06_1_1_2_1'] = indice_prix_mensuel_98_2015['_6110']
+indice_prix_mensuel_98_2015['poste_06_1_1_3_1'] = indice_prix_mensuel_98_2015['_6110']
+indice_prix_mensuel_98_2015['poste_06_3'] = indice_prix_mensuel_98_2015['_6000']
+indice_prix_mensuel_98_2015['poste_06_4_2'] = indice_prix_mensuel_98_2015['_6000']
+indice_prix_mensuel_98_2015['poste_07_1_2_1_2'] = indice_prix_mensuel_98_2015['poste_07_1_2_1_1']
+indice_prix_mensuel_98_2015['poste_08_2'] = indice_prix_mensuel_98_2015['_8000']
+indice_prix_mensuel_98_2015['poste_08_1_2_1_1'] = indice_prix_mensuel_98_2015['_8120']
+indice_prix_mensuel_98_2015['poste_08_1_2_2_1'] = indice_prix_mensuel_98_2015['_8120']
+indice_prix_mensuel_98_2015['poste_09_2_1_1_3'] = indice_prix_mensuel_98_2015['poste_09_2_2_2']
+indice_prix_mensuel_98_2015['poste_09_2_3_1'] = indice_prix_mensuel_98_2015['poste_09_2_2_2']
+indice_prix_mensuel_98_2015['poste_09_4_3'] = indice_prix_mensuel_98_2015['poste_09_3_1_1_1']
+indice_prix_mensuel_98_2015['poste_10_5_1'] = indice_prix_mensuel_98_2015['poste_10_1']
+indice_prix_mensuel_98_2015['poste_10_5_2'] = indice_prix_mensuel_98_2015['poste_10_1']
+indice_prix_mensuel_98_2015['poste_10_2'] = indice_prix_mensuel_98_2015['poste_10_1']
+indice_prix_mensuel_98_2015['poste_10_3'] = indice_prix_mensuel_98_2015['poste_10_1']
+indice_prix_mensuel_98_2015['poste_10_4'] = indice_prix_mensuel_98_2015['poste_10_1']
+indice_prix_mensuel_98_2015['poste_11_1_1_1_2'] = indice_prix_mensuel_98_2015['poste_11_1_1_1_1']
+indice_prix_mensuel_98_2015['poste_12_1_3_3_3'] = indice_prix_mensuel_98_2015['_12000']
+indice_prix_mensuel_98_2015['poste_12_5_1_1_1'] = indice_prix_mensuel_98_2015['_12500']
+indice_prix_mensuel_98_2015['poste_12_5_5_1_1'] = indice_prix_mensuel_98_2015['_12500']
+to_delete = [column for column in indice_prix_mensuel_98_2015.columns if column[:1] == '_']
+for column in to_delete:
+    del indice_prix_mensuel_98_2015[column]
 
-produits_rename = [column for column in coicop_one_nine.columns if len(column) == 5 and column[4:] == '0']
-change_name = coicop_one_nine[produits_rename]
-for element in change_name.columns:
-    change_name.rename(columns={element: element[:4]}, inplace = True)
-
-autres_produits_list = [column for column in coicop_one_nine.columns if len(column) != 5 or column[4:] != '0']
-autres_produits = coicop_one_nine[autres_produits_list]
-
-coicop_one_nine_new = pd.concat([change_name, autres_produits], axis = 1)
-
-coicop_dix_douze = indice_prix_mensuel_98_2015.ix[:,'_10000':]
-produits_rename = [column for column in coicop_dix_douze.columns if len(column) == 6 and column[5:] == '0']
-change_name = coicop_dix_douze[produits_rename]
-for element in change_name.columns:
-    change_name.rename(columns={element: element[:5]}, inplace = True)
-
-autres_produits_list = [column for column in coicop_dix_douze.columns if len(column) != 6 or column[5:] != '0']
-autres_produits = coicop_dix_douze[autres_produits_list]
-
-coicop_dix_douze_new = pd.concat([change_name, autres_produits], axis = 1)
-
-indice_prix_mensuel_98_2015 = pd.concat([coicop_one_nine_new, coicop_dix_douze_new], axis = 1)
-for element in indice_prix_mensuel_98_2015.columns:
-    indice_prix_mensuel_98_2015.rename(columns={element: 'poste_coicop' + element}, inplace = True)
-indice_prix_mensuel_98_2015.rename(
-    columns={'poste_coicopAnnee': 'Annee', 'poste_coicopMois': 'Mois'}, inplace = True)
-
-# Fixation des indices de prix non renseignés par l'Insee :
-
-indice_prix_mensuel_98_2015['poste_coicop_1411'] = indice_prix_mensuel_98_2015['poste_coicop_100']
-indice_prix_mensuel_98_2015['poste_coicop_2201'] = indice_prix_mensuel_98_2015['poste_coicop_220']
-indice_prix_mensuel_98_2015['poste_coicop_2202'] = indice_prix_mensuel_98_2015['poste_coicop_220']
-indice_prix_mensuel_98_2015['poste_coicop_2203'] = indice_prix_mensuel_98_2015['poste_coicop_220']
-indice_prix_mensuel_98_2015['poste_coicop_230'] = indice_prix_mensuel_98_2015['poste_coicop_200']
-indice_prix_mensuel_98_2015['poste_coicop_2411'] = indice_prix_mensuel_98_2015['poste_coicop_200']
-indice_prix_mensuel_98_2015['poste_coicop_322'] = indice_prix_mensuel_98_2015['poste_coicop_321']
-indice_prix_mensuel_98_2015['poste_coicop_412'] = indice_prix_mensuel_98_2015['poste_coicop_411']
-indice_prix_mensuel_98_2015['poste_coicop_421'] = indice_prix_mensuel_98_2015['poste_coicop_411']
-indice_prix_mensuel_98_2015['poste_coicop_444'] = indice_prix_mensuel_98_2015['poste_coicop_4414']
-indice_prix_mensuel_98_2015['poste_coicop_442'] = indice_prix_mensuel_98_2015['poste_coicop_4412']
-indice_prix_mensuel_98_2015['poste_coicop_4552'] = indice_prix_mensuel_98_2015['poste_coicop_4551']
-indice_prix_mensuel_98_2015['poste_coicop_513'] = indice_prix_mensuel_98_2015['poste_coicop_5115']
-indice_prix_mensuel_98_2015['poste_coicop_552'] = indice_prix_mensuel_98_2015['poste_coicop_551']
-indice_prix_mensuel_98_2015['poste_coicop_5711'] = indice_prix_mensuel_98_2015['poste_coicop_500']
-indice_prix_mensuel_98_2015['poste_coicop_5712'] = indice_prix_mensuel_98_2015['poste_coicop_500']
-indice_prix_mensuel_98_2015['poste_coicop_612'] = indice_prix_mensuel_98_2015['poste_coicop_611']
-indice_prix_mensuel_98_2015['poste_coicop_613'] = indice_prix_mensuel_98_2015['poste_coicop_611']
-indice_prix_mensuel_98_2015['poste_coicop_630'] = indice_prix_mensuel_98_2015['poste_coicop_600']
-indice_prix_mensuel_98_2015['poste_coicop_6412'] = indice_prix_mensuel_98_2015['poste_coicop_600']
-indice_prix_mensuel_98_2015['poste_coicop_713'] = indice_prix_mensuel_98_2015['poste_coicop_712']
-indice_prix_mensuel_98_2015['poste_coicop_734'] = indice_prix_mensuel_98_2015['poste_coicop_735']
-indice_prix_mensuel_98_2015['poste_coicop_831'] = indice_prix_mensuel_98_2015['poste_coicop_812']
-indice_prix_mensuel_98_2015['poste_coicop_832'] = indice_prix_mensuel_98_2015['poste_coicop_812']
-indice_prix_mensuel_98_2015['poste_coicop_8141'] = indice_prix_mensuel_98_2015['poste_coicop_800']
-indice_prix_mensuel_98_2015['poste_coicop_9122'] = indice_prix_mensuel_98_2015['poste_coicop_912']
-indice_prix_mensuel_98_2015['poste_coicop_922'] = indice_prix_mensuel_98_2015['poste_coicop_921']
-indice_prix_mensuel_98_2015['poste_coicop_923'] = indice_prix_mensuel_98_2015['poste_coicop_921']
-indice_prix_mensuel_98_2015['poste_coicop_935'] = indice_prix_mensuel_98_2015['poste_coicop_934']
-indice_prix_mensuel_98_2015['poste_coicop_943'] = indice_prix_mensuel_98_2015['poste_coicop_931']
-indice_prix_mensuel_98_2015['poste_coicop_954'] = indice_prix_mensuel_98_2015['poste_coicop_953']
-indice_prix_mensuel_98_2015['poste_coicop_10151'] = indice_prix_mensuel_98_2015['poste_coicop_1010']
-indice_prix_mensuel_98_2015['poste_coicop_10152'] = indice_prix_mensuel_98_2015['poste_coicop_1010']
-indice_prix_mensuel_98_2015['poste_coicop_1020'] = indice_prix_mensuel_98_2015['poste_coicop_1010']
-indice_prix_mensuel_98_2015['poste_coicop_1040'] = indice_prix_mensuel_98_2015['poste_coicop_1010']
-indice_prix_mensuel_98_2015['poste_coicop_1050'] = indice_prix_mensuel_98_2015['poste_coicop_1010']
-indice_prix_mensuel_98_2015['poste_coicop_11113'] = indice_prix_mensuel_98_2015['poste_coicop_11112']
-indice_prix_mensuel_98_2015['poste_coicop_1212'] = indice_prix_mensuel_98_2015['poste_coicop_1213']
-indice_prix_mensuel_98_2015['poste_coicop_1220'] = indice_prix_mensuel_98_2015['poste_coicop_1200']
-indice_prix_mensuel_98_2015['poste_coicop_1251'] = indice_prix_mensuel_98_2015['poste_coicop_1250']
-indice_prix_mensuel_98_2015['poste_coicop_1255'] = indice_prix_mensuel_98_2015['poste_coicop_1250']
-indice_prix_mensuel_98_2015['poste_coicop_1262'] = indice_prix_mensuel_98_2015['poste_coicop_1261']
-indice_prix_mensuel_98_2015['poste_coicop_1291'] = indice_prix_mensuel_98_2015['poste_coicop_1200']
-
-
+indice_prix_mensuel_98_2015[['Annee', 'Mois']] = indice_prix_mensuel_98_2015[['Annee', 'Mois']].astype(str)
 indice_prix_mensuel_98_2015['date'] = indice_prix_mensuel_98_2015[u'Annee'] + '_' + indice_prix_mensuel_98_2015[u'Mois']
 indice_prix_mensuel_98_2015[[u'Annee'] + [u'Mois']] = indice_prix_mensuel_98_2015[[u'Annee'] + [u'Mois']].astype(float)
 indice_prix_mensuel_98_2015['temps'] = \
@@ -127,7 +103,7 @@ del indice_prix_mensuel_98_2015[u'Annee']
 indice_prix_mensuel_98_2015['mois'] = indice_prix_mensuel_98_2015[u'Mois'].copy()
 del indice_prix_mensuel_98_2015[u'Mois']
 
-produits = list(column for column in indice_prix_mensuel_98_2015.columns if column[:13] == 'poste_coicop_')
+produits = list(column for column in indice_prix_mensuel_98_2015.columns if column[:6] == 'poste_')
 
 df_indice_prix_produit = pd.melt(indice_prix_mensuel_98_2015, id_vars = ['date', 'temps', 'mois'], value_vars=produits,
     value_name = 'prix', var_name = 'bien')

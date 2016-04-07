@@ -297,7 +297,7 @@ class depenses_gaz_variables(Variable):
     label = u"Dépenses en gaz des ménages, hors coût fixe de l'abonnement"
 
     def function(self, simulation, period):
-        depenses_gaz = simulation.calculate('poste_coicop_452', period)
+        depenses_gaz = simulation.calculate('poste_04_5_2_1_1', period)
         tarif_fixe = simulation.calculate('depenses_gaz_tarif_fixe', period)
 
         depenses_gaz_variables = depenses_gaz - tarif_fixe
@@ -312,7 +312,7 @@ class depenses_electricite_percentile(Variable):
     label = u"Classement par percentile des dépenses d'électricité"
 
     def function(self, simulation, period):
-        depenses_electricite = simulation.calculate('poste_coicop_451', period)
+        depenses_electricite = simulation.calculate('poste_04_5_1_1_1_b', period)
         depenses_electricite_rank = depenses_electricite.argsort().argsort()
         depenses_electricite_percentile = depenses_electricite_rank / len(depenses_electricite_rank) * 100
 
@@ -378,7 +378,7 @@ class depenses_electricite_variables(Variable):
     label = u"Dépenses en électricité des ménages, hors coût fixe de l'abonnement"
 
     def function(self, simulation, period):
-        depenses_electricite = simulation.calculate('poste_coicop_451', period)
+        depenses_electricite = simulation.calculate('poste_04_5_1_1_1_b', period)
         depenses_electricite_tarif_fixe = simulation.calculate('depenses_electricite_tarif_fixe', period)
         depenses_electricite_variables = depenses_electricite - depenses_electricite_tarif_fixe
         depenses_electricite_variables = numpy.maximum(depenses_electricite_variables, 0)

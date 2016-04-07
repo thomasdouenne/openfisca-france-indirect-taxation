@@ -49,7 +49,7 @@ def calage_viellissement_depenses(year_data, year_calage, depenses, masses):
     depenses_calees = pandas.DataFrame()
     coicop_list = set(poste_coicop for poste_coicop in depenses.columns if poste_coicop[:5] == 'poste')
     for column in coicop_list:
-        coicop = column.replace('poste_coicop_', '')
+        coicop = column.replace('poste_', '')
         if coicop[:1] != '1' and coicop[:1] != '9':
             grosposte = int(coicop[:1])
         else:
@@ -303,9 +303,9 @@ def build_df_calee_on_ticpe(dataframe, year_calage = None, year_data = None):
     masses_ticpe_cn = int(
         masses_cn_12postes_data_frame[year_calage][masses_cn_12postes_data_frame['Code'] == '            07.2.2'].values
         )
-    masses_ticpe_bdf = (dataframe['poste_coicop_07_2_2_1_1'] * dataframe['pondmen']).sum() / 1e6
+    masses_ticpe_bdf = (dataframe['poste_07_2_2_1_1'] * dataframe['pondmen']).sum() / 1e6
     ratio_ticpe = masses_ticpe_cn / masses_ticpe_bdf
-    dataframe['poste_coicop_07_2_2_1_1'] = dataframe['poste_coicop_07_2_2_1_1'] * ratio_ticpe
-    dataframe_calee['poste_coicop_07_2_2_1_1'] = dataframe['poste_coicop_07_2_2_1_1']
+    dataframe['poste_07_2_2_1_1'] = dataframe['poste_07_2_2_1_1'] * ratio_ticpe
+    dataframe_calee['poste_07_2_2_1_1'] = dataframe['poste_07_2_2_1_1']
 
     return dataframe_calee

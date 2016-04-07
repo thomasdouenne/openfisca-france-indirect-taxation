@@ -44,9 +44,9 @@ if __name__ == '__main__':
         'niveau_vie_decile',
         'ocde10',
         'vag',
-        'poste_coicop_411',
-        'poste_coicop_412',
-        'poste_coicop_421'
+        'poste_411',
+        'poste_412',
+        'poste_421'
         ]
 
     simulated_variables_with_e10 = simulated_variables_without_e10 + ['sp_e10_ticpe']
@@ -121,7 +121,7 @@ if __name__ == '__main__':
         data_households = data_households[['quantite_carbu'] + ['quantite_diesel'] + ['quantite_essence'] +
             ['diesel_ttc'] + ['super_95_ttc'] + ['rev_disponible'] + ['rural'] + ['petite_villes'] +
             ['villes_moyennes'] + ['grandes_villes'] + ['agglo_paris'] + ['nenfants'] + ['nadultes'] + ['ocde10'] +
-            ['situapr'] + ['situacj'] + ['poste_coicop_411'] + ['poste_coicop_412'] + ['poste_coicop_421']
+            ['situapr'] + ['situacj'] + ['poste_411'] + ['poste_412'] + ['poste_421']
             ].astype(float)
 
         # data_households contains all the variables we need for the regression. We can therefore implement it
@@ -149,7 +149,7 @@ if __name__ == '__main__':
 
         # We will now introduce an instrumental variable to correct for the endogeneity of expenditures.
 
-        data_log['loyer'] = data_log['poste_coicop_411'] + data_log['poste_coicop_412'] + data_log['poste_coicop_421']
+        data_log['loyer'] = data_log['poste_411'] + data_log['poste_412'] + data_log['poste_421']
         data_log.to_csv(os.path.join(default_config_files_directory, 'openfisca_france_indirect_taxation', 'assets',
             'quaids', 'data_regression.csv'), sep = ',')
         #model = \
@@ -167,7 +167,7 @@ if __name__ == '__main__':
 # A first instrument could by total expenditure (minus fuel expenditures to avoid endogeneity)
 # But there is actually no reason for this instrument to be exogenous
 # A more promising instrument is the rent (or imputed rent) paid by the households. This is given at the coicop
-# 411 and 412, and in loyer_impute (= poste_coicop_421).
+# 411 and 412, and in loyer_impute (= poste_421).
 
 # The command to execute 2 stage least square is the following:
 # statsmodels.sandbox.regression.gmm.IV2SLS(endog, exog, instrument=None)

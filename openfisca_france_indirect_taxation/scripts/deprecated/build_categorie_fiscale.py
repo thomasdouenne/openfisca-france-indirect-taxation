@@ -97,7 +97,7 @@ class categorie_fiscale_{0}(DatedVariable):
     def function_{year_start}_{year_stop}(self, simulation, period):
         categorie_fiscale_{categorie_fiscale} = 0
         for poste in {postes_coicop}:
-            categorie_fiscale_{categorie_fiscale} += simulation.calculate('poste_coicop_' + poste, period)
+            categorie_fiscale_{categorie_fiscale} += simulation.calculate('poste_' + poste, period)
         return period, categorie_fiscale_{categorie_fiscale}
 '''.format(
                 categorie_fiscale = categorie_fiscale,

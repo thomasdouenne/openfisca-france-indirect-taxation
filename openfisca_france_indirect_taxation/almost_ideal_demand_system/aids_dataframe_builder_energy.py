@@ -27,7 +27,7 @@ assets_directory = os.path.join(
 # On commence par cinstruire une dataframe appelée data_conso rassemblant les informations sur les dépenses des ménages.
 data_frame_for_reg = None
 data_frame_all_years = pd.DataFrame()
-for year in [2000, 2005, 2011]:
+for year in [2011]:
     aggregates_data_frame = get_input_data_frame(year)
 
     # Pour estimer QAIDS, on se concentre sur les biens non-durables.
@@ -35,12 +35,12 @@ for year in [2000, 2005, 2011]:
     # achat de véhicules, 911, 912, 9122, 913, 9151 : technologies high-tech, 9211, 921, 923: gros équipements loisirs,
     # 941, 960 : voyages séjours et cadeaux, 10i0 : enseignement, 12.. : articles de soin et bijoux
 
-    biens_durables = ['poste_coicop_442', 'poste_coicop_711', 'poste_coicop_712', 'poste_coicop_713',
-        'poste_coicop_911', 'poste_coicop_912', 'poste_coicop_9122', 'poste_coicop_913', 'poste_coicop_9151',
-        'poste_coicop_9211', 'poste_coicop_921', 'poste_coicop_922', 'poste_coicop_923', 'poste_coicop_960',
-        'poste_coicop_941', 'poste_coicop_1010', 'poste_coicop_1015', 'poste_coicop_10152', 'poste_coicop_1020',
-        'poste_coicop_1040', 'poste_coicop_1050', 'poste_coicop_1212', 'poste_coicop_1231', 'poste_coicop_1240',
-        'poste_coicop_12411', 'poste_coicop_1270']
+    biens_durables = ['poste_04_4_1_3_1', 'poste_07_1_1_1_1', 'poste_07_1_2_1_1', 'poste_07_1_3',
+        'poste_09_1_1_1_2', 'poste_09_1_1_1_3', 'poste_09_1_2_1_1_a', 'poste_09_1_2_1_1_b', 'poste_09_1_3_1_1', 'poste_09_1_5_1_1',
+        'poste_09_2_1_1_1', 'poste_09_2_2_2', 'poste_09_2_1_1_3', 'poste_09_2_3_1', 'poste_09_6_1_1_1',
+        'poste_09_4_1_1_2', 'poste_10_1', 'poste_10_5_1', 'poste_10_5_2', 'poste_10_2',
+        'poste_10_4', 'poste_10_5', 'poste_12_1_3_3_3', 'poste_12_3_1_1_1', 'poste_12_3_3_1_1',
+        'poste_12_4_1_1_1', 'poste_12_7_1_1_1']
 
     for bien in biens_durables:
         try:
@@ -48,19 +48,17 @@ for year in [2000, 2005, 2011]:
         except:
             aggregates_data_frame = aggregates_data_frame
 
-    produits_alimentaire = ['poste_coicop_111', 'poste_coicop_112', 'poste_coicop_113', 'poste_coicop_114',
-        'poste_coicop_115', 'poste_coicop_1151', 'poste_coicop_116', 'poste_coicop_117', 'poste_coicop_118',
-        'poste_coicop_1181', 'poste_coicop_119', 'poste_coicop_121', 'poste_coicop_122']
+    produits_alimentaire = [column for column in aggregates_data_frame.columns if column[:8] == 'poste_01']
 
-    energie_logement = ['poste_coicop_451', 'poste_coicop_4511', 'poste_coicop_452', 'poste_coicop_4522',
-        'poste_coicop_453', 'poste_coicop_454', 'poste_coicop_455', 'poste_coicop_4552']
+    energie_logement = ['poste_04_5_1_1_1_b', 'poste_04_5_1_1_1_b1', 'poste_04_5_2_1_1', 'poste_04_5_2_2_1',
+        'poste_04_5_3_1_1', 'poste_04_5_4_1_1', 'poste_04_5_5_1_1', 'poste_04_5_5_2']
 
-    produits = [column for column in aggregates_data_frame.columns if column[:13] == 'poste_coicop_']
+    produits = [column for column in aggregates_data_frame.columns if column[:6] == 'poste_']
     del column
 
     aggregates_data_frame['depenses_alime'] = sum(aggregates_data_frame[alime] for alime in produits_alimentaire)
 
-    aggregates_data_frame['depenses_carbu'] = aggregates_data_frame['poste_coicop_07_2_2_1_1']
+    aggregates_data_frame['depenses_carbu'] = aggregates_data_frame['poste_07_2_2_1_1']
 
     aggregates_data_frame['depenses_logem'] = 0
     for logem in energie_logement:
@@ -92,12 +90,12 @@ for year in [2000, 2005, 2011]:
     df['indice_prix_produit'] = df['bien'] + '_' + df['vag']
 
     # On merge les prix des biens avec les dépenses déjà présentes dans df. Le merge se fait sur 'indice_prix_produit'
-    # Indice prix produit correspond à poste_coicop_xyz_vag
+    # Indice prix produit correspond à poste_xyz_vag
     df_depenses_prix = pd.merge(df, df_indice_prix_produit, on = 'indice_prix_produit')
     # df_depenses_prix contient les dépenses de consommation et les prix associés à ces dépenses.
     # Il faut maintenant construire les catégories de biens que l'on souhaite comparer.
     df_depenses_prix['type_bien'] = 'autre'
-    df_depenses_prix.loc[df_depenses_prix['bien'] == 'poste_coicop_07_2_2_1_1', 'type_bien'] = 'carbu'
+    df_depenses_prix.loc[df_depenses_prix['bien'] == 'poste_07_2_2_1_1', 'type_bien'] = 'carbu'
     for alime in produits_alimentaire:
         df_depenses_prix.loc[df_depenses_prix['bien'] == alime, 'type_bien'] = 'alime'
     for logem in energie_logement:
@@ -176,7 +174,7 @@ for year in [2000, 2005, 2011]:
     # On récupère les informations importantes sur les ménages, dont les variables démographiques
     df_info_menage = aggregates_data_frame[['agepr', 'depenses_alime', 'depenses_autre', 'depenses_carbu',
         'depenses_logem', 'depenses_tot', 'dip14pr', 'elect_only', 'ident_men', 'nenfants', 'nactifs', 'ocde10',
-        'revtot', 'situacj', 'situapr', 'sourcp', 'stalog', 'strate', 'typmen', 'vag', 'veh_diesel',
+        'revtot', 'situacj', 'situapr', 'stalog', 'strate', 'typmen', 'vag', 'veh_diesel',
         'veh_essence']].copy()
     df_info_menage['ident_men'] = df_info_menage['ident_men'].astype(str)
     df_info_menage['part_alime'] = df_info_menage['depenses_alime'] / df_info_menage['depenses_tot']
@@ -202,7 +200,7 @@ for year in [2000, 2005, 2011]:
 
     dataframe = dataframe[['ident_men', 'part_carbu', 'part_logem', 'part_alime', 'part_autre', 'prix_carbu',
         'prix_logem', 'prix_alime', 'prix_autre', 'agepr', 'depenses_par_uc', 'depenses_tot', 'dip14pr', 'elect_only',
-        'nactifs', 'nenfants', 'situacj', 'situapr', 'sourcp', 'stalog', 'strate', 'typmen',
+        'nactifs', 'nenfants', 'situacj', 'situapr', 'stalog', 'strate', 'typmen',
         'vag', 'veh_diesel', 'veh_essence']]
 
     # On supprime de la base de données les individus pour lesquels on ne dispose d'aucune consommation alimentaire.
@@ -216,6 +214,8 @@ for year in [2000, 2005, 2011]:
     # pour 2011 ce qui est assez important. Cette différence s'explique par la durée des enquêtes (1 semaine en 2011)
     dataframe = dataframe.query('part_carbu < 0.25')
 
+    boum
+
     if year == 2011:
         dataframe = price_carbu_from_quantities(dataframe, 2011)
     else:
@@ -226,13 +226,15 @@ for year in [2000, 2005, 2011]:
 
     dataframe = add_area_dummy(dataframe)
     dataframe = add_stalog_dummy(dataframe)
-    dataframe = add_vag_dummy(dataframe)
+    # dataframe = add_vag_dummy(dataframe)
 
     data_frame_for_reg = dataframe.rename(columns = {'part_carbu': 'w1', 'part_logem': 'w2', 'part_alime': 'w3',
         'part_autre': 'w4', 'prix_carbu': 'p1', 'prix_logem': 'p2', 'prix_alime': 'p3', 'prix_autre': 'p4'})
 
     data_frame_all_years = pd.concat([data_frame_all_years, data_frame_for_reg])
     data_frame_all_years.fillna(0, inplace = True)
+
+    boum
 
     data_frame_for_reg.to_csv(os.path.join(assets_directory, 'openfisca_france_indirect_taxation', 'assets',
     'quaids', 'data_frame_energy_{}.csv'.format(year)), sep = ',')

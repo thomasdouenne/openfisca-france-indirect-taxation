@@ -49,7 +49,7 @@ If this was not the case, we would have issues in the calculation of the price i
 
 df_bien = df_indice_prix_produit[['bien']]
 df_bien = df_bien.drop_duplicates(subset = 'bien', take_last = True)
-produits = [column for column in aggregates_data_frame.columns if column[:13] == 'poste_coicop_']
+produits = [column for column in aggregates_data_frame.columns if column[:6] == 'poste_']
 df_bien_to_merge = aggregates_data_frame[produits][:1]
 df_bien_to_merge = pandas.melt(df_bien_to_merge)
 df_bien_to_merge.rename(columns = {'variable': 'bien'}, inplace = True)

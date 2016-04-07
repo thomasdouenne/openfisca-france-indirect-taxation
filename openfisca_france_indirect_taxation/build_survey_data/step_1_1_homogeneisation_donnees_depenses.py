@@ -173,7 +173,7 @@ def build_depenses_homogenisees(temporary_store = None, year = None):
 #    depenses_by_grosposte = coicop_data_frame.groupby(level = 1, axis = 1).sum()
 #    depenses_by_grosposte = depenses_by_grosposte.merge(poids, left_index = True, right_index = True)
 #
-#    # TODO : understand why it does not work: depenses.rename(columns = {u'0421': 'poste_coicop_421'}, inplace = True)
+#    # TODO : understand why it does not work: depenses.rename(columns = {u'0421': 'poste_421'}, inplace = True)
 #
 #    produits = [column for column in depenses.columns if column.isdigit()]
 #    for code in produits:
@@ -189,7 +189,7 @@ def build_depenses_homogenisees(temporary_store = None, year = None):
 #            depenses.rename(columns = {code: code}, inplace = True)
 #    produits = [column for column in depenses.columns if column.isdigit()]
 #    for code in produits:
-#        depenses.rename(columns = {code: 'poste_coicop_' + code}, inplace = True)
+#        depenses.rename(columns = {code: 'poste_' + code}, inplace = True)
 
     temporary_store['depenses_{}'.format(year)] = depenses
 

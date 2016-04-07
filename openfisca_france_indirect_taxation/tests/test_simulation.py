@@ -51,7 +51,7 @@ def run_survey_simulation(year = None):
                 'decuc',
                 'poste_01_1_1_1_1',
                 'poste_11_1_1_1_1',
-                'poste_07_2_2_1_1',
+                'poste_07_1_3_1_1',
                 'depenses_ticpe',
                 'depenses_carburants',
                 'tva_taux_plein',

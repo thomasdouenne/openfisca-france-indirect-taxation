@@ -27,7 +27,7 @@ assets_directory = os.path.join(
 # On commence par cinstruire une dataframe appelée data_conso rassemblant les informations sur les dépenses des ménages.
 data_frame_for_reg = None
 data_frame_all_years = pd.DataFrame()
-for year in [2000, 2005, 2011]:
+for year in [2011]:
     aggregates_data_frame = get_input_data_frame(year)
 
     # Pour estimer QAIDS, on se concentre sur les biens non-durables.
@@ -35,12 +35,13 @@ for year in [2000, 2005, 2011]:
     # achat de véhicules, 911, 912, 9122, 913, 9151 : technologies high-tech, 9211, 921, 923: gros équipements loisirs,
     # 941, 960 : voyages séjours et cadeaux, 10i0 : enseignement, 12.. : articles de soin et bijoux
 
-    biens_durables = ['poste_coicop_442', 'poste_coicop_711', 'poste_coicop_712', 'poste_coicop_713',
-        'poste_coicop_911', 'poste_coicop_912', 'poste_coicop_9122', 'poste_coicop_913', 'poste_coicop_9151',
-        'poste_coicop_9211', 'poste_coicop_921', 'poste_coicop_922', 'poste_coicop_923', 'poste_coicop_960',
-        'poste_coicop_941', 'poste_coicop_1010', 'poste_coicop_1015', 'poste_coicop_10152', 'poste_coicop_1020',
-        'poste_coicop_1040', 'poste_coicop_1050', 'poste_coicop_1212', 'poste_coicop_1231', 'poste_coicop_1240',
-        'poste_coicop_12411', 'poste_coicop_1270']
+    biens_durables = ['poste_04_4_1_3_1', 'poste_07_1_1_1_1', 'poste_07_1_1_2_1', 'poste_07_1_2_1_1', 'poste_07_1_3',
+        'poste_09_1_1_1_2', 'poste_09_1_1_1_3', 'poste_09_1_2_1_1_a', 'poste_09_1_2_1_1_b', 'poste_09_1_3_1_1', 'poste_09_1_5_1_1',
+        'poste_09_2_1_1_1', 'poste_09_2_2_2', 'poste_09_2_1_1_3', 'poste_09_2_3_1', 'poste_09_6_1_1_1',
+        'poste_09_4_1_1_2', 'poste_10_1', 'poste_10_5_1', 'poste_10_5_2', 'poste_10_2',
+        'poste_10_4', 'poste_10_5', 'poste_12_1_3_3_3', 'poste_12_3_1_1_1', 'poste_12_3_3_1_1',
+        'poste_12_4_1_1_1', 'poste_12_7_1_1_1', 'poste_1_10_1', 'poste_1_10_2', 'poste_14_1_1_1'] + \
+            [x for x in aggregates_data_frame.columns if x[6:8]=='13']
 
     for bien in biens_durables:
         try:
@@ -48,13 +49,13 @@ for year in [2000, 2005, 2011]:
         except:
             aggregates_data_frame = aggregates_data_frame
 
-    energie_logement = ['poste_coicop_451', 'poste_coicop_4511', 'poste_coicop_452', 'poste_coicop_4522',
-        'poste_coicop_453', 'poste_coicop_454', 'poste_coicop_455', 'poste_coicop_4552']
+    energie_logement = ['poste_04_5_1_1_1_b', 'poste_04_5_1_1_1_b1', 'poste_04_5_2_1_1', 'poste_04_5_2_2_1',
+        'poste_04_5_3_1_1', 'poste_04_5_4_1_1', 'poste_04_5_5_1_1', 'poste_04_5_5_2']
 
-    produits = [column for column in aggregates_data_frame.columns if column[:13] == 'poste_coicop_']
+    produits = [column for column in aggregates_data_frame.columns if column[:6] == 'poste_']
     del column
 
-    aggregates_data_frame['depenses_carbu'] = aggregates_data_frame['poste_coicop_07_2_2_1_1']
+    aggregates_data_frame['depenses_carbu'] = aggregates_data_frame['poste_07_2_2_1_1']
 
     aggregates_data_frame['depenses_logem'] = 0
     for logem in energie_logement:
@@ -85,13 +86,13 @@ for year in [2000, 2005, 2011]:
     df['indice_prix_produit'] = df['bien'] + '_' + df['vag']
 
     # On merge les prix des biens avec les dépenses déjà présentes dans df. Le merge se fait sur 'indice_prix_produit'
-    # Indice prix produit correspond à poste_coicop_xyz_vag
+    # Indice prix produit correspond à poste_xyz_vag
     df_depenses_prix = pd.merge(df, df_indice_prix_produit, on = 'indice_prix_produit')
 
     # df_depenses_prix contient les dépenses de consommation et les prix associés à ces dépenses.
     # Il faut maintenant construire les catégories de biens que l'on souhaite comparer.
     df_depenses_prix['type_bien'] = 'autre'
-    df_depenses_prix.loc[df_depenses_prix['bien'] == 'poste_coicop_07_2_2_1_1', 'type_bien'] = 'carbu'
+    df_depenses_prix.loc[df_depenses_prix['bien'] == 'poste_07_2_2_1_1', 'type_bien'] = 'carbu'
     for logem in energie_logement:
         df_depenses_prix.loc[df_depenses_prix['bien'] == logem, 'type_bien'] = 'logem'
     del logem, produit
@@ -172,9 +173,9 @@ for year in [2000, 2005, 2011]:
     # pondérés pour les deux catégories
     dataframe = pd.merge(df_info_menage, df_prix_to_merge, on = 'ident_men')
     del df_info_menage, df_prix_to_merge
-
     # Pour ceux qui ne consomment pas de carburants, on leur associe le prix correspondant à leur vague d'enquête
-    price_carbu = df_indice_prix_produit[df_indice_prix_produit['indice_prix_produit'].str[13:16] == '722'].copy()
+    price_carbu = \
+        df_indice_prix_produit[df_indice_prix_produit['indice_prix_produit'].str[:16] == 'poste_07_2_2_1_1'].copy()
     price_carbu['vag'] = price_carbu['indice_prix_produit'].str[17:].astype(int)
     price_carbu = price_carbu[['vag', 'prix']]
     price_carbu['prix'] = price_carbu['prix'].astype(float)
@@ -216,6 +217,8 @@ for year in [2000, 2005, 2011]:
     data_frame_all_years = pd.concat([data_frame_all_years, data_frame_for_reg])
     data_frame_all_years.fillna(0, inplace = True)
 
+'''
+
     data_frame_for_reg.to_csv(os.path.join(assets_directory, 'openfisca_france_indirect_taxation', 'assets',
     'quaids', 'data_frame_energy_no_alime_{}.csv'.format(year)), sep = ',')
 
@@ -251,3 +254,5 @@ data_frame_large_cities.to_csv(os.path.join(assets_directory, 'openfisca_france_
 # dip14 : use only dip14pr (good proxy for dip14cj anyway), but change the nomenclature to have just 2 or 3 dummies
 # describing whether they attended college or not, etc.
 # Use more functions in utils
+
+'''

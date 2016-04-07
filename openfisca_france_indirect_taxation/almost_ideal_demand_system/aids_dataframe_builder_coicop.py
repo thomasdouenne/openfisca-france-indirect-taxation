@@ -90,15 +90,15 @@ for year in [2000, 2005, 2011]:
     # (To do: Obviously there are mistakes in its computation, check why).
 
     df_info_menage = aggregates_data_frame[['ocde10'] + ['depenses_tot'] + ['vag'] + ['typmen'] + ['revtot'] +
-        ['poste_coicop_2201'] + ['poste_coicop_2202'] + ['poste_coicop_2203']]
+        ['poste_2201'] + ['poste_2202'] + ['poste_2203']]
     df_info_menage['fumeur'] = 0
-    df_info_menage[['poste_coicop_2201'] + ['poste_coicop_2202'] + ['poste_coicop_2203']] = \
-        df_info_menage[['poste_coicop_2201'] + ['poste_coicop_2202'] + ['poste_coicop_2203']].astype(float)
+    df_info_menage[['poste_2201'] + ['poste_2202'] + ['poste_2203']] = \
+        df_info_menage[['poste_2201'] + ['poste_2202'] + ['poste_2203']].astype(float)
     df_info_menage['consommation_tabac'] = (
-        df_info_menage['poste_coicop_2201'] + df_info_menage['poste_coicop_2202'] + df_info_menage['poste_coicop_2203']
+        df_info_menage['poste_2201'] + df_info_menage['poste_2202'] + df_info_menage['poste_2203']
         )
     df_info_menage['fumeur'] = 1 * (df_info_menage['consommation_tabac'] > 0)
-    df_info_menage.drop(['consommation_tabac', 'poste_coicop_2201', 'poste_coicop_2202', 'poste_coicop_2203'],
+    df_info_menage.drop(['consommation_tabac', 'poste_2201', 'poste_2202', 'poste_2203'],
         inplace = True, axis = 1)
     df_info_menage.index.name = 'ident_men'
     df_info_menage.reset_index(inplace = True)

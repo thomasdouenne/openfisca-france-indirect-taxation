@@ -21,7 +21,7 @@ consommation_directory = os.path.join(
 
 script_poste_coicop = open(
     os.path.join(consommation_directory, 'openfisca_france_indirect_taxation', 'model',
-    'consommation', 'poste_coicop_generator.py'), 'w'
+    'consommation', 'poste_generator.py'), 'w'
     )
 
 presentation_and_imports = '''
@@ -68,7 +68,7 @@ for each_poste in z:
     label = 'u' + '"' + label + '"'
 
     def_poste_coicop = '''
-class poste_coicop_{0}(Variable):
+class poste_{0}(Variable):
     column = FloatCol()
     entity_class = Menages
     label = {1}'''.format(each_poste, label)

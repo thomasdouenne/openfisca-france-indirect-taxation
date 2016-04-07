@@ -164,7 +164,7 @@ def build_homogeneisation_caracteristiques_sociales(temporary_store = None, year
                 'nbact': 'nactifs',
                 'nbenf1': 'nenfants',
                 'nbpers': 'npers',
-                'rev81': 'poste_coicop_421',
+                'rev81': 'poste_421',
                 'typmen1': 'typmen'
                 },
             inplace = True,
