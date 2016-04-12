@@ -38,9 +38,9 @@ for year in [2011]:
     biens_durables = ['poste_04_4_1_3_1', 'poste_07_1_1_1_1', 'poste_07_1_1_2_1', 'poste_07_1_2_1_1', 'poste_07_1_3',
         'poste_09_1_1_1_2', 'poste_09_1_1_1_3', 'poste_09_1_2_1_1_a', 'poste_09_1_2_1_1_b', 'poste_09_1_3_1_1', 'poste_09_1_5_1_1',
         'poste_09_2_1_1_1', 'poste_09_2_2_2', 'poste_09_2_1_1_3', 'poste_09_2_3_1', 'poste_09_6_1_1_1',
-        'poste_09_4_1_1_2', 'poste_10_1', 'poste_10_5_1', 'poste_10_5_2', 'poste_10_2',
-        'poste_10_4', 'poste_10_5', 'poste_12_1_3_3_3', 'poste_12_3_1_1_1', 'poste_12_3_3_1_1',
-        'poste_12_4_1_1_1', 'poste_12_7_1_1_1', 'poste_1_10_1', 'poste_1_10_2', 'poste_14_1_1_1'] + \
+        'poste_09_4_1_1_2', 'poste_10_1', 'poste_10_5_1', 'poste_10_5_2', 'poste_10_2', 'poste_10_4', 'poste_10_5',
+        'poste_12_1_3_3_3', 'poste_12_3_1_1_1', 'poste_12_3_3_1_1', 'poste_12_4_1_1_1', 'poste_12_7_1_1_1',
+        'poste_01_10_1', 'poste_01_10_2', 'poste_14_1_1_1', 'poste_coicop_04_2_1'] + \
             [x for x in aggregates_data_frame.columns if x[6:8]=='13']
 
     for bien in biens_durables:
