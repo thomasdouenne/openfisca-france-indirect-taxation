@@ -71,10 +71,22 @@ class cataeu(YearlyVariable):
     label = u"catégorie de la commune de résidence 2011"
 
 
+class chaufp(YearlyVariable):
+    column = FloatCol
+    entity = Menage
+    label = u"chauffage individuel ou collectif"
+
+
 class dip14pr(YearlyVariable):
     column = FloatCol
     entity = Menage
     label = u"Diplôme de la personne de référence"
+
+
+class grande_ville(YearlyVariable):
+    column = IntCol
+    entity = Menage
+    label = u"Le ménage vit dans une petite ville"
 
 
 class ident_men(YearlyVariable):
@@ -131,12 +143,6 @@ class ouest_sud(YearlyVariable):
     label = u"Le ménage vit dans l'ouest ou le sud de la France"
 
 
-class paris(YearlyVariable):
-    column = IntCol
-    entity = Menage
-    label = u"Le ménage vit en région parisienne"
-
-
 class petite_ville(YearlyVariable):
     column = IntCol
     entity = Menage
@@ -147,12 +153,6 @@ class pondmen(YearlyVariable):
     column = IntCol
     entity = Menage
     label = u"Pondération du ménage"
-
-
-class rural(YearlyVariable):
-    column = FloatCol
-    entity = Menage
-    label = u"Le ménage vit en milieu rural"
 
 
 class situacj(YearlyVariable):
@@ -209,6 +209,12 @@ class vag(YearlyVariable):
     label = u"numéro de la vague d'interrogation du ménage"
 
 
+class ville_moyenne(YearlyVariable):
+    column = IntCol
+    entity = Menage
+    label = u"Le ménage vit dans une petite ville"
+
+
 class vp_deplacements_pro(YearlyVariable):
     column = FloatCol
     entity = Menage
@@ -236,3 +242,63 @@ class zeat(YearlyVariable):
         )
     entity = Menage
     label = u"Zone d'étude et d'aménagement du territoire"
+
+
+class grande_ville(YearlyVariable):
+    column = FloatCol
+    entity = Menage
+    label = u"Le ménage vit dans une grande ville"
+
+    def formula(self, simulation, period):
+        strate = simulation.calculate('strate', period)
+        grande_ville = 0 + 1 * (strate == 3)
+    
+        return grande_ville
+
+
+class moyenne_ville(YearlyVariable):
+    column = FloatCol
+    entity = Menage
+    label = u"Le ménage vit dans une ville moyenne"
+
+    def formula(self, simulation, period):
+        strate = simulation.calculate('strate', period)
+        moyenne_ville = 0 + 1 * (strate == 2)
+    
+        return moyenne_ville
+
+
+class paris(YearlyVariable):
+    column = IntCol
+    entity = Menage
+    label = u"Le ménage vit en région parisienne"
+
+    def formula(self, simulation, period):
+        strate = simulation.calculate('strate', period)
+        paris = 0 + 1 * (strate == 4)
+    
+        return paris
+
+
+class petite_ville(YearlyVariable):
+    column = FloatCol
+    entity = Menage
+    label = u"Le ménage vit dans une petite ville"
+
+    def formula(self, simulation, period):
+        strate = simulation.calculate('strate', period)
+        petite_ville = 0 + 1 * (strate == 1)
+    
+        return petite_ville
+
+
+class rural(YearlyVariable):
+    column = IntCol
+    entity = Menage
+    label = u"Le ménage vit en région parisienne"
+
+    def formula(self, simulation, period):
+        strate = simulation.calculate('strate', period)
+        rural = 0 + 1 * (strate == 0)
+    
+        return rural

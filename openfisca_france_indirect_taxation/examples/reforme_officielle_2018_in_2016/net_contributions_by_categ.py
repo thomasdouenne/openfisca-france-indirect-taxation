@@ -29,6 +29,7 @@ simulated_variables = [
     'revenu_reforme_officielle_2018_in_2016',
     'cheques_energie_officielle_2018_in_2016',
     'cheques_energie_by_energy_officielle_2018_in_2016',
+    #'cheques_energie_urban_unit_officielle_2018_in_2016',
     'reste_transferts_neutre_officielle_2018_in_2016',
     'rev_disp_loyerimput',
     'depenses_tot',
@@ -68,4 +69,4 @@ for category in ['niveau_vie_decile']: #['niveau_vie_decile', 'age_group_pr', 's
     graph_builder_bar(df_to_plot['regressivite_revenu'], False)
     graph_builder_bar(df_to_plot['regressivite_depenses'], False)
     graph_builder_bar(df_to_plot['transferts_nets_apres_redistribution_uc'], False)
-    save_dataframe_to_graph(df_to_plot, 'Monetary/transfers_by_{}.csv'.format(category))
+    #save_dataframe_to_graph(df_to_plot, 'Monetary/transfers_by_{}.csv'.format(category))

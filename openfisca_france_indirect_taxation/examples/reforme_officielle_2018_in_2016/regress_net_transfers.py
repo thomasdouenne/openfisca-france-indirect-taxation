@@ -22,8 +22,8 @@ inflation_kwargs = dict(inflator_by_variable = inflators_by_year[year])
 
 
 # Homogeneous + SL :
-#elasticities['elas_price_1_1'] = -0.466
-#elasticities['elas_price_2_2'] = -0.214
+elasticities['elas_price_1_1'] = -0.466
+elasticities['elas_price_2_2'] = -0.214
 
 # Homogeneous, no SL :
 #elasticities['elas_price_1_1'] = -0.440
@@ -39,8 +39,12 @@ survey_scenario = SurveyScenario.create(
 
 simulated_variables = [
     'revenu_reforme_officielle_2018_in_2016',
+    'revenu_reforme_officielle_2018_in_2016_plus_cspe',
+    'depenses_diesel_corrigees',
+    'depenses_carburants_corrigees',
     'cheques_energie_officielle_2018_in_2016',
     'reste_transferts_neutre_officielle_2018_in_2016',
+    'reste_transferts_neutre_officielle_2018_in_2016_plus_cspe',
     'strate',
     'niveau_vie_decile',
     'pondmen',
@@ -52,6 +56,7 @@ simulated_variables = [
     'majorite_double_vitrage',
     'nactifs',
     'nenfants',
+    'niveau_vie_decile',
     'ocde10',
     'rev_disp_loyerimput',
     'situacj',
@@ -76,6 +81,11 @@ df_reforme = survey_scenario.create_data_frame_by_entity(simulated_variables, pe
 df_reforme['transferts_nets_apres_redistribution_uc'] = (
     df_reforme['cheques_energie_officielle_2018_in_2016'] +
     df_reforme['reste_transferts_neutre_officielle_2018_in_2016'] -
+    df_reforme['revenu_reforme_officielle_2018_in_2016']
+    ) / df_reforme['ocde10']
+
+df_reforme['transferts_nets_apres_cheque_officiel'] = (
+    df_reforme['cheques_energie_officielle_2018_in_2016'] -
     df_reforme['revenu_reforme_officielle_2018_in_2016']
     ) / df_reforme['ocde10']
 
@@ -111,12 +121,17 @@ df_reforme['part_distance_teg'] = \
     df_reforme['distance_routiere_hebdomadaire_teg'] / df_reforme['distance']
 df_reforme['part_distance_teg'] = df_reforme['part_distance_teg'].fillna(0) * 47
 
+df_reforme['diesel'] = 0 + 1 * (df_reforme['depenses_diesel_corrigees'] > 0)
+df_reforme['carburants'] = 0 + 1 * (df_reforme['depenses_carburants_corrigees'] > 0)# * (df_reforme['depenses_diesel_corrigees'] == 0)
+
 df_reforme.rename(
     columns = {
         'transferts_nets_apres_redistribution_uc' : 'Net_transfers_by_cu_after_recycling',
         'rev_disp_loyerimput' : 'Disposable_income',
         'rev_disp_loyerimput_2' : 'Disposable_income_squared',
         'combustibles_liquides' : 'Domestic_fuel',
+        'diesel' : 'Diesel',
+        'carburants' : 'Transport_fuels',
         'gaz_ville' : 'Natural_gas',
         'strate_0' : 'Rural',
         'strate_1' : 'Small_cities',
@@ -146,20 +161,60 @@ df_reforme.rename(
 
 regression_ols = smf.ols(formula = 'Net_transfers_by_cu_after_recycling ~ \
     Disposable_income + Disposable_income_squared + \
-    Domestic_fuel + Natural_gas + Rural + Small_cities + Large_cities + Paris + Ouest_south + \
-    Majority_double_glazing + Bad_walls_isolation + Good_walls_isolation + \
+    Domestic_fuel + Natural_gas + Diesel + Transport_fuels + \
+    Rural + Small_cities + Large_cities + Paris + Ouest_south + \
     Building_before_1949 + Building_1949_74 + Individual_housing + Owner + \
-    Living_area_m2 + Housing_benefits + \
-    Consumption_units + Monoparental + Number_in_labor_force + Student + Age_representative + Age_representative_squared + \
+    Living_area_m2 + \
+    Consumption_units + Number_in_labor_force + Student + Age_representative + Age_representative_squared + \
     Share_distance_to_work + Vehicule_age',
     data = df_reforme).fit()
 print regression_ols.summary()
 
-"""
-
-# Compute transfers by income
 params = regression_ols.params
 params = params.to_frame().T
+print params.Disposable_income * 1e04
+
+bse = regression_ols.bse
+bse = bse.to_frame().T
+print bse.Disposable_income * 1e05
+
+
+print float(len(df_reforme.query('Rural == 1').query('Diesel > 0'))) / len(df_reforme.query('Rural == 1'))
+#print float(len(df_reforme.query('Small_cities == 1').query('Diesel > 0'))) / len(df_reforme.query('Small_cities == 1'))
+#print float(len(df_reforme.query('strate_2 == 1').query('Diesel > 0'))) / len(df_reforme.query('strate_2 == 1'))
+#print float(len(df_reforme.query('Large_cities == 1').query('Diesel > 0'))) / len(df_reforme.query('Large_cities == 1'))
+print float(len(df_reforme.query('Paris == 1').query('Diesel > 0'))) / len(df_reforme.query('Paris == 1'))
+
+print float(len(df_reforme.query('Rural == 1').query('Domestic_fuel > 0'))) / len(df_reforme.query('Rural == 1'))
+#print float(len(df_reforme.query('Small_cities == 1').query('Domestic_fuel > 0'))) / len(df_reforme.query('Small_cities == 1'))
+#print float(len(df_reforme.query('strate_2 == 1').query('Domestic_fuel > 0'))) / len(df_reforme.query('strate_2 == 1'))
+#print float(len(df_reforme.query('Large_cities == 1').query('Domestic_fuel > 0'))) / len(df_reforme.query('Large_cities == 1'))
+print float(len(df_reforme.query('Paris == 1').query('Domestic_fuel > 0'))) / len(df_reforme.query('Paris == 1'))
+
+#print float(len(df_reforme.query('Rural == 1').query('Natural_gas > 0'))) / len(df_reforme.query('Rural == 1'))
+#print float(len(df_reforme.query('Small_cities == 1').query('Natural_gas > 0'))) / len(df_reforme.query('Small_cities == 1'))
+#print float(len(df_reforme.query('strate_2 == 1').query('Natural_gas > 0'))) / len(df_reforme.query('strate_2 == 1'))
+#print float(len(df_reforme.query('Large_cities == 1').query('Natural_gas > 0'))) / len(df_reforme.query('Large_cities == 1'))
+#print float(len(df_reforme.query('Paris == 1').query('Natural_gas > 0'))) / len(df_reforme.query('Paris == 1'))
+
+#cas_type_loser = df_reforme.query('niveau_vie_decile == 3').query('Rural == 1').query('Domestic_fuel == 1').query('Diesel == 1')
+#print cas_type_loser['Net_transfers_by_cu_after_recycling'].mean(), cas_type_loser['transferts_nets_apres_cheque_officiel'].mean()
+
+#cas_type_winner = df_reforme.query('niveau_vie_decile == 8').query('Paris == 1').query('Domestic_fuel == 0').query('Natural_gas == 0')
+#print cas_type_winner['Net_transfers_by_cu_after_recycling'].mean(), cas_type_winner['transferts_nets_apres_cheque_officiel'].mean()
+
+
+
+"""
+
+params = regression_ols.params
+params = params.to_frame().T
+print params.Disposable_income * 1e04
+
+bse = regression_ols.bse
+bse = bse.to_frame().T
+print bse.Disposable_income * 1e05
+
 
 param_income = params['Disposable_income'][0]
 param_income_2 = params['Disposable_income_squared'][0]

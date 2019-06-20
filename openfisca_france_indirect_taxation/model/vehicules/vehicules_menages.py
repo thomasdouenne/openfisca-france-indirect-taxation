@@ -48,3 +48,39 @@ class veh_tot(YearlyVariable):
     column = IntCol
     entity = Menage
     label = u"Nombre de véhicules total dans le ménage"
+
+
+class carburants(YearlyVariable):
+    column = FloatCol
+    entity = Menage
+    label = u"Le ménage consomme des carburants"
+
+    def formula(self, simulation, period):
+        depenses_carburants = simulation.calculate('depenses_carburants_corrigees', period)
+        carburants = 0 + 1 * (depenses_carburants > 0)
+        
+        return carburants
+
+
+class diesel(YearlyVariable):
+    column = FloatCol
+    entity = Menage
+    label = u"Le ménage consomme du diesel"
+
+    def formula(self, simulation, period):
+        depenses_diesel = simulation.calculate('depenses_diesel_corrigees', period)
+        diesel = 0 + 1 * (depenses_diesel > 0)
+        
+        return diesel
+
+
+class essence(YearlyVariable):
+    column = FloatCol
+    entity = Menage
+    label = u"Le ménage consomme de l'essence"
+
+    def formula(self, simulation, period):
+        depenses_essence = simulation.calculate('depenses_essence_corrigees', period)
+        essence = 0 + 1 * (depenses_essence > 0)
+        
+        return essence

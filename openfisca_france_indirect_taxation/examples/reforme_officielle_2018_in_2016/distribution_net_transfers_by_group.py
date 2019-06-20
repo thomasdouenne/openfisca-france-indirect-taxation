@@ -25,6 +25,8 @@ simulated_variables = [
     'cheques_energie_officielle_2018_in_2016',
     'cheques_energie_by_energy_officielle_2018_in_2016',
     'cheques_energie_ruraux_by_energy_officielle_2018_in_2016',
+    'cheques_energie_area_officielle_2018_in_2016',
+    'cheques_energie_by_area_energy_officielle_2018_in_2016',
     'ocde10',
     'reste_transferts_neutre_officielle_2018_in_2016',
     'niveau_vie_decile',
@@ -80,3 +82,14 @@ if __name__ == '__main__':
 
     df_to_plot = distribution_net_transfers_by_group(df_reforme, 'niveau_vie_decile')
     print df_to_plot
+    
+    assert(
+            (df_reforme['cheques_energie_by_area_energy_officielle_2018_in_2016'] * df_reforme['pondmen']).sum()
+            >
+            0.99 * (df_reforme['cheques_energie_officielle_2018_in_2016'] * df_reforme['pondmen']).sum()
+            )
+    assert(
+            0.99 * (df_reforme['cheques_energie_by_area_energy_officielle_2018_in_2016'] * df_reforme['pondmen']).sum()
+            <
+            (df_reforme['cheques_energie_officielle_2018_in_2016'] * df_reforme['pondmen']).sum()
+            )
