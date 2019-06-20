@@ -234,6 +234,7 @@ for year in [2000, 2005, 2011]:
     price_carbu['prix'] = price_carbu['prix'].astype(float)
 
 
+    dataframe.vag = dataframe.vag.astype(int)
     dataframe = pd.merge(dataframe, price_carbu, on = 'vag')
     del price_carbu
     dataframe.loc[dataframe['prix_carbu'] == 0, 'prix_carbu'] = dataframe['prix']

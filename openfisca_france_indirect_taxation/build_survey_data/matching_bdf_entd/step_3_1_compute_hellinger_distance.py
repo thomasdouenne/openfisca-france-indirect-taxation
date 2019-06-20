@@ -364,6 +364,24 @@ def hellinger_ocde10(data_bdf, data_entd):
 hellinger_ocde10 = hellinger_ocde10(data_bdf, data_entd)
 
 
+def hellinger_paris(data_bdf, data_entd):
+    distribution_bdf = dict()
+    for i in [0, 1]:
+        distribution_bdf['{}'.format(i)] = (data_bdf.query('paris == {}'.format(i))['pondmen'].sum() /
+                 data_bdf['pondmen'].sum())
+
+    distribution_entd = dict()
+    for i in [0, 1]:
+        distribution_entd['{}'.format(i)] = (data_entd.query('paris == {}'.format(i))['pondmen'].sum() /
+                 data_entd['pondmen'].sum())
+
+    hellinger_distance = hellinger(distribution_bdf.values(),distribution_entd.values())
+    
+    return hellinger_distance
+    
+hellinger_paris = hellinger_paris(data_bdf, data_entd)
+
+
 # By construction, the distance should be extremely close to 0
 def hellinger_quintiles(data_bdf, data_entd):
     distribution_bdf = dict()
@@ -381,6 +399,24 @@ def hellinger_quintiles(data_bdf, data_entd):
     return hellinger_distance
     
 hellinger_quintiles = hellinger_quintiles(data_bdf, data_entd)
+
+
+def hellinger_rural(data_bdf, data_entd):
+    distribution_bdf = dict()
+    for i in [0, 1]:
+        distribution_bdf['{}'.format(i)] = (data_bdf.query('rural == {}'.format(i))['pondmen'].sum() /
+                 data_bdf['pondmen'].sum())
+
+    distribution_entd = dict()
+    for i in [0, 1]:
+        distribution_entd['{}'.format(i)] = (data_entd.query('rural == {}'.format(i))['pondmen'].sum() /
+                 data_entd['pondmen'].sum())
+
+    hellinger_distance = hellinger(distribution_bdf.values(),distribution_entd.values())
+    
+    return hellinger_distance
+    
+hellinger_rural = hellinger_rural(data_bdf, data_entd)
 
 
 def hellinger_situapr(data_bdf, data_entd):
@@ -415,7 +451,7 @@ def hellinger_stalog(data_bdf, data_entd): # This variable must be redefined
     hellinger_distance = hellinger(distribution_bdf.values(),distribution_entd.values())
 
     return hellinger_distance
-    
+
 hellinger_stalog = hellinger_stalog(data_bdf, data_entd)
 
 
