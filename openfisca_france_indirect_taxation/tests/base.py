@@ -17,6 +17,7 @@ from openfisca_france_indirect_taxation.reforms import (
     rattrapage_diesel,
     taxe_carbone,
     reforme_tva_2019,
+    reformes_cae
     )
 
 
@@ -47,6 +48,7 @@ reform_list = {
     'officielle_2019_in_2017': officielle_2019_in_2017.officielle_2019_in_2017,
     'officielle_2019_in_2018': officielle_2019_in_2018.officielle_2019_in_2018,
     'reforme_tva_2019': reforme_tva_2019.reforme_tva_2019,
+    'reformes_cae': reformes_cae.reformes_cae,
     # 'contribution_climat_energie': contribution_climat_energie.build_reform,
     # 'test_reforme_alimentation': alimentation.build_reform,
     # 'taxes_carburants': taxes_carburants.build_reform,
